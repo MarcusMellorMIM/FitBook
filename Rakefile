@@ -6,3 +6,7 @@ task :console do
     Pry.start
 end
 
+desc 'Create a new user'
+task :createuser do
+    CreateUserCLI.run
+end
