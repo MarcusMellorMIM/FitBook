@@ -14,4 +14,8 @@ end
 desc 'Find a new user'
 task :finduser do
     FindUserCLI.run
+
+desc 'run program'
+task :run do
+    MenuCLI.run
 end
