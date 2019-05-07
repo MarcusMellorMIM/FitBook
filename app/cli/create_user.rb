@@ -1,4 +1,5 @@
 Marcus 7/5/19
+Added some more words
 Is called from the menu
 
 It will create a new user User.create , or allow a person to quit
