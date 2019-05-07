@@ -10,3 +10,8 @@ desc 'Create a new user'
 task :createuser do
     CreateUserCLI.run
 end
+
+desc 'Find a new user'
+task :finduser do
+    FindUserCLI.run
+end

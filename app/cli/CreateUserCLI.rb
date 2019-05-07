@@ -22,7 +22,7 @@ class CreateUserCLI
  # Display some fancy stuff,
     pastel = Pastel.new
     font = TTY::Font.new
-    puts pastel.blue(font.write("FitBook-User"))
+    puts pastel.blue(font.write("Create a person"))
   end
 
   def self.userdetails
