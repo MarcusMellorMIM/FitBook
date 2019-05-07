@@ -10,3 +10,8 @@ desc 'Create a new user'
 task :createuser do
     CreateUserCLI.run
 end
+
+desc 'run program'
+task :run do
+    MenuCLI.run
+end
