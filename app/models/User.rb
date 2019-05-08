@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+
   has_many :weights
   has_many :exercises
   has_many :exercise_details, through: :exercises
@@ -9,6 +10,8 @@ class User < ActiveRecord::Base
 
   def age_years( date_entered=Date.today.year )
     # Calculate the age in years from today as default, or a date passed in
+    # This isn't perfect, as it may be out my 1 depending on the date and birthdate.
+    # We will come back to this, at a later date.
     if self.dob
       date_entered - self.dob.year
     end
@@ -16,13 +19,12 @@ class User < ActiveRecord::Base
 
   def latest_weight_kg
     # Get the last weight entered, with the assumption that this will be the latest.
-    self.weights.last.weight_kg
+    weights.last.weight_kg
   end
 
   def bmr
     # Calculate the Basal Metabolic Rate using a persons height, weight, gender and age
     bmr=nil
-
     age = age_years
     weight_kg = latest_weight_kg
     height_cm = self.height_cm
@@ -37,6 +39,29 @@ class User < ActiveRecord::Base
       end
     end
     bmr.round(2)
+  end
+
+  def mealdiary( date= Date.current )
+# Dates are a pain ... date = Date.new(YYYY,MM,DD,HH,MM) or just YYYY,MM,DD
+# Returns all meals for a user for a given day
+      meals.where( :meal_date => date.beginning_of_day..date.end_of_day)
+  end
+
+  def mealdiarycalories( date = Date.current )
+    # We are mapping all of the meals on a day to get all of the meal meal_details
+    # this returns an array of arrays .... so we need to flatten it to allow us
+    # to get to the attributes/methods in the detail class.
+    mealdiary( date ).map {|m| m.meal_details }.flatten.map {|md| md.calories }.sum
+  end
+
+  def exercisediary( date = Date.current )
+    # Return all exercise class instances for a person on a given day
+    exercises.where( :exercise_date => date.beginning_of_day..date.end_of_day)
+  end
+
+  def exercisediarycalories( date = Date.current )
+    # returns the total calories spent exercising for a given day and user.
+    exercisediary( date ).map {|e| e.exercise_details }.flatten.map {|ed| ed.calories }.sum
   end
 
 end
