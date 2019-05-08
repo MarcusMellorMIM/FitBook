@@ -7,24 +7,36 @@ class User < ActiveRecord::Base
   has_many :meal_details, through: :meals
   has_many :meal_types, through: :meals
 
+  def age_years( date_entered=Date.today.year )
+    # Calculate the age in years from today as default, or a date passed in
+    if self.dob
+      date_entered - self.dob.year
+    end
+  end
+
+  def latest_weight_kg
+    # Get the last weight entered, with the assumption that this will be the latest.
+    self.weights.last.weight_kg
+  end
+
   def bmr
     # Calculate the Basal Metabolic Rate using a persons height, weight, gender and age
     bmr=nil
 
-    if self.dob
-      age = self.dob.year - Date.today.year
-    end
-    weight_kg = self.weights.last.weight_kg
+    age = age_years
+    weight_kg = latest_weight_kg
     height_cm = self.height_cm
 
     if age && weight_kg && height_cm
-    if self.gender[0]=='M'
-          bmr= 88.362 + (13.397 * weight_kg) +(4.799 *height_cm) - (5.677 *age)
-    else
-          bmr=447.593 + (9.247 * weight_kg)+(3.098 * height_cm)-(4.330 * age)
+      if self.gender[0]=='M'
+  # Using the Harris-Benedict BMR equation from
+  # https://www.thecalculatorsite.com/articles/health/bmr-formula.php
+          bmr= 66.47 + (13.75 * weight_kg) +(5.003 *height_cm) - (6.755 *age)
+      else
+          bmr=655.1 + (9.563 * weight_kg)+(1.85 * height_cm)-(4.676 * age)
+      end
     end
+    bmr.round(2)
   end
 
-    bmr
-  end
 end
