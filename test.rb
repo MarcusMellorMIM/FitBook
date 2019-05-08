@@ -18,3 +18,6 @@ mt1=MealType.find(1)
 exd1=ExerciseDetail.find(1)
 
 md1=MealDetail.find(1)
+
+date = Date.new(2019,05,04)
+user = User.find(2)

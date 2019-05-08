@@ -8,37 +8,40 @@ class User < ActiveRecord::Base
   has_many :meal_details, through: :meals
   has_many :meal_types, through: :meals
 
-  def age_years( date_entered=Date.today.year )
+  def age_years( date_entered=Date.current )
     # Calculate the age in years from today as default, or a date passed in
     # This isn't perfect, as it may be out my 1 depending on the date and birthdate.
     # We will come back to this, at a later date.
     if self.dob
-      date_entered - self.dob.year
+      date_entered.year - self.dob.year
     end
   end
 
-  def latest_weight_kg
-    # Get the last weight entered, with the assumption that this will be the latest.
-    weights.last.weight_kg
+  def latest_weight_kg( date_entered=Date.current)
+    # Get the last weight entered, on or prior to a given date's midnight
+    weight=weights.where( "created_at < ?", date_entered.end_of_day).last
+    if weight
+      weight_kg=weight.weight_kg
+    end
   end
 
-  def bmr
+  def bmr( date = Date.current )
     # Calculate the Basal Metabolic Rate using a persons height, weight, gender and age
     bmr=nil
-    age = age_years
-    weight_kg = latest_weight_kg
+    age = age_years( date )
+    weight_kg = latest_weight_kg( date )
     height_cm = self.height_cm
 
     if age && weight_kg && height_cm
       if self.gender[0]=='M'
   # Using the Harris-Benedict BMR equation from
   # https://www.thecalculatorsite.com/articles/health/bmr-formula.php
-          bmr= 66.47 + (13.75 * weight_kg) +(5.003 *height_cm) - (6.755 *age)
+          bmr= (66.47 + (13.75 * weight_kg) +(5.003 *height_cm) - (6.755 *age)).round(2)
       else
-          bmr=655.1 + (9.563 * weight_kg)+(1.85 * height_cm)-(4.676 * age)
+          bmr=(655.1 + (9.563 * weight_kg)+(1.85 * height_cm)-(4.676 * age)).round(2)
       end
     end
-    bmr.round(2)
+    bmr
   end
 
   def mealdiary( date= Date.current )
@@ -63,5 +66,27 @@ class User < ActiveRecord::Base
     # returns the total calories spent exercising for a given day and user.
     exercisediary( date ).map {|e| e.exercise_details }.flatten.map {|ed| ed.calories }.sum
   end
+
+  def bmrsummary ( date, iterations=5 )
+# Return an array of BMR calculations, from date, with each iteration being date+index
+    return_array = []
+    counter=0
+    iterations.times do
+      return_array << bmr( date + counter )
+      counter+=1
+    end
+    return_array
+  end
+
+  def weightsummary( date, iterations=5 )
+# Return an array of weight entries, returning the latest entered prior to a date
+        return_array = []
+        counter=0
+        iterations.times do
+          return_array << latest_weight_kg( date + counter )
+          counter+=1
+        end
+        return_array
+      end
 
 end
