@@ -33,6 +33,7 @@ class CreateUserCLI
     height_cm = prompt.ask("Please enter the height in cm")
     gender = prompt.select("Please enter the gender ", %w(Male Female))
     weight_kg = prompt.ask("Please enter the latest weight in kg")
+    weightdate = MenuCLI.getdatetime("When did you last weigh yourself?")
 
     puts "Please confirm the following is correct ... "
     puts "#{name}, is #{gender}, born on #{dob}, #{height_cm} cm tall, weighing #{weight_kg} kilos"
@@ -40,7 +41,7 @@ class CreateUserCLI
 
     if confirm
       user = User.create( name:name, dob:dob, height_cm:height_cm, gender:gender )
-      weight = Weight.create( weight_kg:weight_kg, user_id:user.id)
+      weight = Weight.create( weight_kg:weight_kg, user_id:user.id, weight_date:weightdate)
     end
 
     user
