@@ -19,7 +19,7 @@ class User < ActiveRecord::Base
 
   def latest_weight_kg( date_entered=Date.current)
     # Get the last weight entered, on or prior to a given date's midnight
-    weight=weights.where( "created_at < ?", date_entered.end_of_day).last
+    weight=weights.where( "weight_date < ?", date_entered.end_of_day).last
     if weight
       weight_kg=weight.weight_kg
     end

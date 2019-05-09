@@ -18,12 +18,13 @@ class MealCLI
     mealdate = MenuCLI.getdatetime("When did you have your meal?")
     mealtypeselect =  prompt.select("Please rate your meal details",mealtypes)
     mealtypeselectid = MealType.find_by(detail:mealtypeselect).id
-    carl =  prompt.ask( "If you know calories add them, or hit return and we\'ll calculate them for you")
-    if carl.to_i > 0
-      puts "You had one #{mealtypeselect} meal, which consisted of #{meal_details}, which is #{carl} calories."
+    calories =  prompt.ask( "If you know calories add them, or hit return and we\'ll calculate them for you")
+    if calories.to_i > 0
+      puts "You had one #{mealtypeselect} meal, which consisted of #{meal_details}, which is #{calories} calories."
       confirm = prompt.yes?( 'Is this correct ?' )
       if confirm
         meal1 = Meal.create(detail:meal_details, user_id:user.id, meal_type_id:mealtypeselectid,meal_date:mealdate)
+        MealDetail.create(meal_id:meal1.id, detail:meal_details, calories:calories)
       end
     else
       puts "You entered; #{meal_details}."
@@ -33,6 +34,7 @@ class MealCLI
         meal1 = Meal.create(detail:meal_details, user_id:user.id, meal_type_id:mealtypeselectid,meal_date:mealdate)
         mealcount = NutritionixAPI.meal(meal1, meal_details)
         meal1.meal_details.map {|m| puts "#{m.detail} consisting of #{m.calories} calories "} #display in a table
+        prompt.yes?("Hit return to continue")
         # Display what has been created
           # if calories are set create a mealdetail, if not call the api
       end
