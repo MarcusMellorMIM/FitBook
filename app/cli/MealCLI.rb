@@ -63,7 +63,7 @@ mealtypeselectid = MealType.find_by(detail:mealtypeselect).id
      end
       confirm = prompt.yes?( 'Is this correct ?' )
       if confirm
-        meal1 = Meal.create(detail:meal_details, user_id:user.id, meal_type_id:mealtypeselectid)
+        meal1 = Meal.create(detail:meal_details, user_id:user.id, meal_type_id:mealtypeselectid,meal_date:mealdate)
         meal2 = MealDetail.create(calories:carl, meal_id:meal1.id, detail:meal1.detail)
         # if calories are set create a mealdetail, if not call the api
         end
