@@ -21,13 +21,13 @@ class NutritionixAPI
 
   end
 
-  def self.meal( detail )
+  def self.meal( meal, detail )
     # Returns an array of hashes which includes the following
     # For the moment, we are only interested in those marked with **
     # "food_name"**
     # "serving_qty"**
     # "serving_unit"**
-    # "serving_weight_grams"**
+    # "serving_weight_grams"** Not using yet, but would be the 1st to use
     # "nf_calories"**
     # "nf_total_fat"=>16.47,
     #   "nf_saturated_fat"=>7.71,
@@ -40,12 +40,20 @@ class NutritionixAPI
     # "nf_potassium"=>82.77,
     # "nf_p"=>68.47,
 
-    returnarray=[]
     myhash = get_info( detail )
+    recordscreated=myhash.length
     myhash.each do |hash, food |
-      returnarray << hash["food_name"]
+      detail = "#{hash["serving_qty"]} #{hash["serving_unit"]} of #{hash["food_name"]}"
+      calories=hash["nf_calories"]
+      MealDetail.create( meal_id:meal.id, detail:detail,  calories:calories)
     end
-    returnarray
+    recordscreated
   end
 
 end
+
+# mhash.map {|m| m["serving_qty"].to_s + " " + m["serving_unit"] + " of  " + m["food_name"]  }
+# mhash.map {|m| m["serving_qty"]} --- string
+# mhash.map {|m| m["serving_unit"]} ---
+# mhash.map {|m| m["serving_weight_grams"]}
+# mhash.map {|m| m["nf_calories"]}
