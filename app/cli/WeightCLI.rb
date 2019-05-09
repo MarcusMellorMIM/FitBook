@@ -12,7 +12,7 @@ class WeightCLI
     prompt = TTY::Prompt.new
     pastel = Pastel.new
     font = TTY::Font.new
-    puts pastel.blue(font.write("Record weight"))
+    puts pastel.blue(font.write("Weight"))
     puts ''
   end
 

@@ -22,14 +22,14 @@ class CreateUserCLI
  # Display some fancy stuff,
     pastel = Pastel.new
     font = TTY::Font.new
-    puts pastel.blue(font.write("Create a person"))
+    puts pastel.blue(font.write("New"))
   end
 
   def self.userdetails
     user = nil
     prompt = TTY::Prompt.new
     name = prompt.ask("Please enter your name", default: ENV['USER'] )
-    dob = prompt.ask("Please enter your dob YYYYMMDD")
+    dob = MenuCLI.getdate("Please enter your date of birth")
     height_cm = prompt.ask("Please enter your height in cm")
     gender = prompt.select("Please enter your gender ", %w(Male Female))
     weight_kg = prompt.ask("Please enter your weight in kg")

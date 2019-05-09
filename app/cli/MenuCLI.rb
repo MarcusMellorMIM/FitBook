@@ -13,6 +13,52 @@ class MenuCLI
     @user = nil
   end
 
+  def self.getdate( prompt_txt )
+    # A generic method to allow a user to enter a date with various defauls
+    # Prompt the user to confirm the year, defaulting to this one
+    # Prompt the user to confirm the month, defaulting to this one
+    # Same for day and hour.
+    prompt = TTY::Prompt.new
+    year = Date.current.year
+    month = Date.current.month
+    day = Date.current.day
+    puts ( prompt_txt )
+    day = prompt.ask("Please enter day", default: day).to_i
+    month = prompt.ask("Please enter month", default: month).to_i
+    year = prompt.ask("Please enter year", default: year).to_i
+    mydate = DateTime.new(year,month,day)
+  end
+
+  def self.getdatetime( prompt_txt)
+    # A generic method to allow a user to enter a date with various defauls
+    # Prompt the user to confirm the year, defaulting to this one
+    # Prompt the user to confirm the month, defaulting to this one
+    # Same for day and hour.
+    prompt = TTY::Prompt.new
+    year = Date.current.year
+    month = Date.current.month
+    day = Date.current.day
+    hour = DateTime.current.hour
+
+    timeof = prompt.select(prompt_txt, %w(Now Today Yesterday Other))
+
+    if timeof != 'Now'
+     selecthour = prompt.ask('Please enter hour', default: hour)
+     hour = selecthour.to_i
+    end
+
+    if timeof =='Yesterday'
+      day = Date.yesterday.day
+    end
+
+    if timeof =='Other'
+      day = prompt.ask("Please enter day", default: day).to_i
+      month = prompt.ask("Please enter month", default: month).to_i
+      year = prompt.ask("Please enter year", default: year).to_i
+    end
+    mydate = Date.new(year,month,day, hour)
+  end
+
  def self.welcome
    pastel = Pastel.new
    font = TTY::Font.new
@@ -22,27 +68,32 @@ class MenuCLI
 
  def self.usermenu
     prompt = TTY::Prompt.new
-    choices =['Create a new user', 'Find a new user']
+    choices =['Create a new person', 'Find a person', 'Quit']
     choice = prompt.select("Please choose an option ",choices)
     puts choice
-  if choice == 'Create a new user'
+  if choice == 'Create a new person'
     @@user = CreateUserCLI.run
-  else
+  elsif choice == 'Find a person'
     @@user = FindUserCLI.run
   end
   @@user
  end
 
-  def self.fullmenu
+ def self.fullmenu
     prompt = TTY::Prompt.new
-    choices =["Record a new weight", "Record a meal","Record exercise activity","View your daily diary","View summary details"]
-    choice = prompt.select("Please choose an option ",choices)
+    choices =["Create a new person", "Find a person", "Record a new weight", "Record a meal","Record exercise activity","View your daily diary","View summary details", "Quit"]
+    choice = prompt.select("Please choose an option for #{@@user.name}",choices)
 
-    if choice == "Record a new weight"
+    if choice == 'Create a new person'
+      @@user = CreateUserCLI.run
+    elsif choice == 'Find a person'
+      @@user = FindUserCLI.run
+    elsif choice == "Record a new weight"
       WeightCLI.run( @@user )
     elsif choice == "Record a meal"
       MealCLI.run( @@user )
     end
+
   end
 
   def self.run

@@ -8,7 +8,7 @@ class FindUserCLI
   # Display some fancy stuff, as a welcome
    pastel = Pastel.new
    font = TTY::Font.new
-   puts pastel.blue(font.write("Find a person"))
+   puts pastel.blue(font.write("Find"))
   end
 
   def self.finduser
