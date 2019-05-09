@@ -36,6 +36,7 @@ class ExerciseCLI
         e1 = Exercise.create(detail:details, user_id:user.id, exercise_type_id:typeselectid,exercise_date:date)
         excount = NutritionixAPI.exercise(e1, details)
         e1.exercise_details.map {|e| puts "#{e.detail} consisting of #{e.calories} calories "} #display in a table
+        prompt.yes?("Hit return to continue")
         # Display what has been created
           # if calories are set create a mealdetail, if not call the api
       end
