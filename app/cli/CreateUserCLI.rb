@@ -28,15 +28,14 @@ class CreateUserCLI
   def self.userdetails
     user = nil
     prompt = TTY::Prompt.new
-    name = prompt.ask("Please enter your name", default: ENV['USER'] )
-    dob = MenuCLI.getdate("Please enter your date of birth")
-    height_cm = prompt.ask("Please enter your height in cm")
-    gender = prompt.select("Please enter your gender ", %w(Male Female))
-    weight_kg = prompt.ask("Please enter your weight in kg")
+    name = prompt.ask("Please enter the name", default: ENV['USER'] )
+    dob = MenuCLI.getdate("Please enter the date of birth")
+    height_cm = prompt.ask("Please enter the height in cm")
+    gender = prompt.select("Please enter the gender ", %w(Male Female))
+    weight_kg = prompt.ask("Please enter the latest weight in kg")
 
     puts "Please confirm the following is correct ... "
-    puts "Your name is #{name}, you are #{gender} and you were born on #{dob}"
-    puts "You are #{height_cm} cm tall, and weigh #{weight_kg} kilos"
+    puts "#{name}, is #{gender}, born on #{dob}, #{height_cm} cm tall, weighing #{weight_kg} kilos"
     confirm = prompt.yes?( 'Is this correct ? ' )
 
     if confirm

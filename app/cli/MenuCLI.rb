@@ -26,7 +26,7 @@ class MenuCLI
     day = prompt.ask("Please enter day", default: day).to_i
     month = prompt.ask("Please enter month", default: month).to_i
     year = prompt.ask("Please enter year", default: year).to_i
-    mydate = DateTime.new(year,month,day)
+    mydate = Date.new(year,month,day)
   end
 
   def self.getdatetime( prompt_txt)
@@ -49,6 +49,8 @@ class MenuCLI
 
     if timeof =='Yesterday'
       day = Date.yesterday.day
+      month = Date.yesterday.month
+      year = Date.yesterday.year
     end
 
     if timeof =='Other'
@@ -56,7 +58,7 @@ class MenuCLI
       month = prompt.ask("Please enter month", default: month).to_i
       year = prompt.ask("Please enter year", default: year).to_i
     end
-    mydate = Date.new(year,month,day, hour)
+    mydate = DateTime.new(year,month,day, hour)
   end
 
  def self.welcome
@@ -68,15 +70,17 @@ class MenuCLI
 
  def self.usermenu
     prompt = TTY::Prompt.new
-    choices =['Create a new person', 'Find a person', 'Quit']
+    choices =["Create a new person", "Find a person", "Quit"]
     choice = prompt.select("Please choose an option ",choices)
-    puts choice
-  if choice == 'Create a new person'
-    @@user = CreateUserCLI.run
-  elsif choice == 'Find a person'
-    @@user = FindUserCLI.run
-  end
-  @@user
+
+    if choice == 'Create a new person'
+      @@user = CreateUserCLI.run
+    elsif choice == 'Find a person'
+      @@user = FindUserCLI.run
+    end
+
+    choice
+
  end
 
  def self.fullmenu
@@ -92,7 +96,11 @@ class MenuCLI
       WeightCLI.run( @@user )
     elsif choice == "Record a meal"
       MealCLI.run( @@user )
+    elsif choice == "Record exercise activity"
+      ExerciseCLI.run( @@user )
     end
+
+    choice
 
   end
 
@@ -103,13 +111,14 @@ class MenuCLI
     welcome
     while (continue)
       if !@@user
-        @@user = usermenu
+        choice = usermenu
+      else
+        choice = fullmenu
       end
 
-      if @@user
-        fullmenu
+      if choice=="Quit"
+        continue=false
       end
-      continue = prompt.yes?( 'Do you wish to continue?')
     end
   end
 

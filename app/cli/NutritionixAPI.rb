@@ -4,20 +4,41 @@ require 'net/https'
 
 class NutritionixAPI
 
-  def self.get_info(params)
-  @body = {
-    "query" => params,
-    "timezone" => "US/Eastern"
-  }.to_json
+  def self.get_mealinfo(params)
+    @body = {
+      "query" => params,
+      "timezone" => "US/Eastern"
+    }.to_json
 
-  uri = URI.parse("https://trackapi.nutritionix.com/v2/natural/nutrients")
-  https = Net::HTTP.new(uri.host,uri.port)
-  https.use_ssl = true
-  req = Net::HTTP::Post.new(uri.path, initheader = {'x-app-key' => 'c1c9449f86cac6f5c48e9da9eb390dc5', 'x-app-id' =>  '2d7f68ea', 'Content-Type' =>'application/json'})
-  req.body = @body
-  res = https.request(req)
+    uri = URI.parse("https://trackapi.nutritionix.com/v2/natural/nutrients")
+    https = Net::HTTP.new(uri.host,uri.port)
+    https.use_ssl = true
+    req = Net::HTTP::Post.new(uri.path, initheader = {'x-app-key' => 'c1c9449f86cac6f5c48e9da9eb390dc5', 'x-app-id' =>  '2d7f68ea', 'Content-Type' =>'application/json'})
+    req.body = @body
+    res = https.request(req)
   #puts "Response #{res.code} #{res.message}: #{res.body}"
-  JSON.parse(res.body)["foods"]
+      JSON.parse(res.body)["foods"]
+
+  end
+
+  def self.get_exerciseinfo( detail, gender, weight_kg, height_cm, age_years )
+    @body = {
+      "query" => detail,
+      "gender" => gender,
+      "weight_kg" => weight_kg,
+      "height_cm" => height_cm,
+      "age" => age_years,
+      "timezone" => "US/Eastern"
+    }.to_json
+
+    uri = URI.parse("https://trackapi.nutritionix.com/v2/natural/exercise")
+    https = Net::HTTP.new(uri.host,uri.port)
+    https.use_ssl = true
+    req = Net::HTTP::Post.new(uri.path, initheader = {'x-app-key' => 'c1c9449f86cac6f5c48e9da9eb390dc5', 'x-app-id' =>  '2d7f68ea', 'Content-Type' =>'application/json'})
+    req.body = @body
+    res = https.request(req)
+  #puts "Response #{res.code} #{res.message}: #{res.body}"
+    JSON.parse(res.body) #["foods"]
 
   end
 
@@ -40,7 +61,25 @@ class NutritionixAPI
     # "nf_potassium"=>82.77,
     # "nf_p"=>68.47,
 
-    myhash = get_info( detail )
+    myhash = get_mealinfo( detail )
+    recordscreated=myhash.length
+    myhash.each do |hash, food |
+      detail = "#{hash["serving_qty"]} #{hash["serving_unit"]} of #{hash["food_name"]}"
+      calories=hash["nf_calories"]
+      MealDetail.create( meal_id:meal.id, detail:detail,  calories:calories)
+    end
+    recordscreated
+  end
+
+  def self.exercise( exercise, detail )
+    # Returns an array of hashes which includes the following
+    # For the moment, we are only interested in those marked with **
+
+    gender = exercise.user.gender[0]
+    weight_kg = exercise.user.latest_weight_kg
+    height_cm = exercise.user.height_cm
+    age_years = exercise.user.age_years
+    myhash = get_exerciseinfo( detail, gender, weight_kg, height_cm, age_years )
     recordscreated=myhash.length
     myhash.each do |hash, food |
       detail = "#{hash["serving_qty"]} #{hash["serving_unit"]} of #{hash["food_name"]}"
