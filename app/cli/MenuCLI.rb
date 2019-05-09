@@ -37,6 +37,12 @@ class MenuCLI
     prompt = TTY::Prompt.new
     choices =["Record a new weight", "Record a meal","Record exercise activity","View your daily diary","View summary details"]
     choice = prompt.select("Please choose an option ",choices)
+
+    if choice == "Record a new weight"
+      WeightCLI.run( @@user )
+    elsif choice == "Record a meal"
+      MealCLI.run( @@user )
+    end
   end
 
   def self.run
