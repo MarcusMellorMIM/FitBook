@@ -4,6 +4,9 @@ require_relative "../config/environment.rb"
 puts "Marcus test run file "
 
 #resulthash = NutritionixAPI.get_info("one slice of lemon cake, with one scoop of vanila icecream")
+info("one slice of lemon cake, with one scoop of vanila icecream")
+
+mhhash=NutritionixAPI.get_exerciseinfo("ran a marathon", "M",103,177,51)
 
 
   # "food_name"
