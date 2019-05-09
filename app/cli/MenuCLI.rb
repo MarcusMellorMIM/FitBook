@@ -85,19 +85,25 @@ class MenuCLI
 
  def self.fullmenu
     prompt = TTY::Prompt.new
-    choices =["Create a new person", "Find a person", "Record a new weight", "Record a meal","Record exercise activity","View your daily diary","View summary details", "Quit"]
+    choices =["Create a new person", "Find a person", "Update a person", "Record a new weight", "Record a meal","Record exercise activity","View your daily diary","View summary details", "Quit"]
     choice = prompt.select("Please choose an option for #{@@user.name}",choices)
 
     if choice == 'Create a new person'
       @@user = CreateUserCLI.run
     elsif choice == 'Find a person'
       @@user = FindUserCLI.run
+    elsif choice == 'Update a person'
+      UpdateUserCLI.run( @@user )
     elsif choice == "Record a new weight"
       WeightCLI.run( @@user )
     elsif choice == "Record a meal"
       MealCLI.run( @@user )
     elsif choice == "Record exercise activity"
       ExerciseCLI.run( @@user )
+    elsif choice == "View your daily diary"
+      DiaryCLI.run( @@user )
+    elsif choice == "View summary details"
+      SummaryCLI.run( @@user )
     end
 
     choice

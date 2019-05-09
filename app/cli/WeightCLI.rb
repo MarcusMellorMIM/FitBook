@@ -19,11 +19,13 @@ class WeightCLI
   def self.enterweight( user )
     prompt = TTY::Prompt.new
     weight_kg = prompt.ask("Please enter your weight")
-    puts "Please confirm the following is correct. Your weight is recorded as #{weight_kg} Kg."
+    date = MenuCLI.getdatetime("When did you weight yourself?")
+    puts "Please confirm the following is correct."
+    puts "Your weight is recorded as #{weight_kg} Kg. as of #{date}"
     confirm = prompt.yes?( 'Is this correct ?' )
 
     if confirm
-      weight = Weight.create(weight_kg:weight_kg, user_id:user.id)
+      weight = Weight.create(weight_kg:weight_kg, user_id:user.id, weight_date:date)
     end
 
     weight

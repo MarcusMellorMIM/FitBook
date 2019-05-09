@@ -4,9 +4,9 @@ require 'net/https'
 
 class NutritionixAPI
 
-  def self.get_mealinfo(params)
+  def self.get_mealinfo(detail)
     @body = {
-      "query" => params,
+      "query" => detail,
       "timezone" => "US/Eastern"
     }.to_json
 
@@ -27,8 +27,7 @@ class NutritionixAPI
       "gender" => gender,
       "weight_kg" => weight_kg,
       "height_cm" => height_cm,
-      "age" => age_years,
-      "timezone" => "US/Eastern"
+      "age" => age_years
     }.to_json
 
     uri = URI.parse("https://trackapi.nutritionix.com/v2/natural/exercise")
@@ -37,8 +36,7 @@ class NutritionixAPI
     req = Net::HTTP::Post.new(uri.path, initheader = {'x-app-key' => 'c1c9449f86cac6f5c48e9da9eb390dc5', 'x-app-id' =>  '2d7f68ea', 'Content-Type' =>'application/json'})
     req.body = @body
     res = https.request(req)
-  #puts "Response #{res.code} #{res.message}: #{res.body}"
-    JSON.parse(res.body) #["foods"]
+    JSON.parse(res.body)["exercises"]
 
   end
 
@@ -81,10 +79,10 @@ class NutritionixAPI
     age_years = exercise.user.age_years
     myhash = get_exerciseinfo( detail, gender, weight_kg, height_cm, age_years )
     recordscreated=myhash.length
-    myhash.each do |hash, food |
-      detail = "#{hash["serving_qty"]} #{hash["serving_unit"]} of #{hash["food_name"]}"
+    myhash.each do |hash |
+      detail = "#{hash["name"]} for #{hash["duration_min"]} minutes"
       calories=hash["nf_calories"]
-      MealDetail.create( meal_id:meal.id, detail:detail,  calories:calories)
+      ExerciseDetail.create( exercise_id:exercise.id, detail:detail,  calories:calories)
     end
     recordscreated
   end
