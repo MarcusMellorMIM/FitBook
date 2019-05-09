@@ -101,7 +101,7 @@ class MenuCLI
     elsif choice == "Record exercise activity"
       ExerciseCLI.run( @@user )
     elsif choice == "View your daily diary"
-      DiaryCLI.run( @@user )
+      DailyCLI.run( @@user )
     elsif choice == "View summary details"
       SummaryCLI.run( @@user )
     end

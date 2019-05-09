@@ -73,6 +73,7 @@ end
     end
 
     def self.run(user)
+      prompt = TTY::Prompt.new
       welcome
       date = day_selection
       rows = []
@@ -81,6 +82,7 @@ end
       rows = getmeal(rows,user,date)
        table = Terminal::Table.new :rows => rows,:title => "Personal details"
        puts table
+       prompt.yes?('Hit return to continue')
 
     end
 end
