@@ -65,7 +65,6 @@ class MenuCLI
    pastel = Pastel.new
    font = TTY::Font.new
    puts pastel.blue(font.write("Fitbook"))
-   puts 'Welcome!'
  end
 
  def self.usermenu
@@ -110,6 +109,32 @@ class MenuCLI
 
   end
 
+  def self.goodbye
+    system "clear"
+    welcome
+    puts "Thanks for using FitBook"
+    puts ""
+    puts "The app that allows a person to record the food they eat,"
+    puts "the exercise they take and from that, understand whether they"
+    puts "are on a path to continual growth, waist size that is, stay as they are,"
+    puts "or lose a few of those pesky pounts."
+    puts ""
+    puts "It uses natural language processing, provided by Nutritionix,"
+    puts "to break down the meal and exercise into elements,"
+    puts "assigning a calory count against each."
+    puts ""
+    puts "FitBook, understands what your Basel Metabolic Rate is, the"
+    puts "calories you burn by just being alive."
+    puts "It calculates this from your weight, height and age."
+    puts "The calculation is different for men and women."
+    puts ""
+    puts "Anthea and Marcus developed this for you to enjoy"
+    puts "Please feel free to contribute some cash :)"
+    puts ""
+    puts "Powered by Nutritionix (c)"
+
+  end
+
   def self.run
     prompt = TTY::Prompt.new
     continue = true
@@ -129,6 +154,9 @@ class MenuCLI
         continue=false
       end
     end
+
+    goodbye
+
   end
 
 end
