@@ -148,17 +148,40 @@ class User < ActiveRecord::Base
       food = mealdiarycalories( searchdate )
       exercise = exercisediarycalories( searchdate )
       deficit = food - bmr - exercise
+      insight = getinsight(date,bmr,food,exercise,deficit)
       exercisehash = {
         :date => searchdate,
         :bmr => bmr,
         :food => food,
         :exercise => exercise,
-        :deficit => deficit
+        :deficit => deficit,
+        :insight => insight
       }
       returnarray << exercisehash
       counter+=1
     end
     returnarray
+  end
+
+  def getinsight( date,bmr,food,exercise,deficit )
+    # Will return a bit of insight into what is going on with you
+    # This should look at historical data, do stsatistical analysis etc
+    # Possibly extend the use of the API to get recommended calorie intakes
+    # For now, will be pretty basic
+
+    if bmr == 0
+      insight = "Data??"
+    elsif deficit > (bmr*0.2)
+      insight = "Porky?"
+    elsif deficit > (bmr*0.1)
+      insight = "Exercise!"
+    elsif deficit > (0-(bmr*0.1))
+      insight = "Ok"
+    elsif deficit > (0-(bmr*0.2))
+      insight = "Hungry?"
+    else
+      insight = "Eat!"
+    end
   end
 
 end

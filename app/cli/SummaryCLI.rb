@@ -62,6 +62,13 @@ class SummaryCLI
     row_deficit = row_hash.map {|h| h[:deficit].round(2) }
     row_deficit.unshift("Deficit")
     rows << row_deficit
+
+    rows << :separator
+
+    row_insight = row_hash.map {|h| h[:insight] }
+    row_insight.unshift("Insight")
+    rows << row_insight
+
     rows
   end
 
@@ -85,7 +92,7 @@ class SummaryCLI
     #,:style => {:width => 50}
     puts table
     prompt.yes?('Hit return to continue')
-    
+
    # > puts table
   end
 
