@@ -114,8 +114,11 @@ class MenuCLI
     prompt = TTY::Prompt.new
     continue = true
     user = nil
-    welcome
     while (continue)
+
+      system "clear"
+      welcome
+
       if !@@user
         choice = usermenu
       else
