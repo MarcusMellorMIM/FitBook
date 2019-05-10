@@ -17,7 +17,7 @@ class NutritionixAPI
     req.body = @body
     res = https.request(req)
   #puts "Response #{res.code} #{res.message}: #{res.body}"
-      JSON.parse(res.body)["foods"]
+    JSON.parse(res.body)["foods"]
 
   end
 
@@ -60,13 +60,19 @@ class NutritionixAPI
     # "nf_p"=>68.47,
 
     myhash = get_mealinfo( detail )
-    recordscreated=myhash.length
-    myhash.each do |hash, food |
-      detail = "#{hash["serving_qty"]} #{hash["serving_unit"]} of #{hash["food_name"]}"
-      calories=hash["nf_calories"]
-      MealDetail.create( meal_id:meal.id, detail:detail,  calories:calories)
+    if myhash # Fixes the crash if no data is returned
+      recordscreated=myhash.length
+      myhash.each do |hash, food |
+        detail = "#{hash["serving_qty"]} #{hash["serving_unit"]} of #{hash["food_name"]}"
+        calories=hash["nf_calories"]
+        MealDetail.create( meal_id:meal.id, detail:detail,  calories:calories)
+      end
+    else
+      recordscreated=0
     end
+
     recordscreated
+
   end
 
   def self.exercise( exercise, detail )
