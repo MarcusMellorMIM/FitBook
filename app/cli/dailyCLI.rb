@@ -76,7 +76,7 @@ end
       bmr = user.bmr(date)
       exercise = user.exercisediarycalories(date)
       meal_calories = user.mealdiarycalories(date)
-      deficit = meal_calories - bmr - exercise
+      deficit = (meal_calories - bmr - exercise).round(2)
       # calories_array = [];
       # exercise_array =[];
       # deficit_array =[];
@@ -105,6 +105,7 @@ rows
       rows = []
       rows = tableone(rows,user)
       rows = getexercise(rows,user,date)
+      rows << :separator
       rows = getmeal(rows,user,date)
       rows = getcalories(rows, user, date)
        table = Terminal::Table.new :rows => rows,:title => "Details for #{user.name}"
